@@ -2,7 +2,7 @@
 
 var urls = require('./urls.json');
 var request = require('request');
-var parser = require('xml2json');
+var parser = require('fast-xml-parser');
 
 module.exports.byPhone = function(phone, callback) {
     if( !phone || !callback) {
@@ -51,15 +51,7 @@ module.exports.byUrl = function(url, callback){
                 return;
             }
 
-            var result = parser.toJson(
-                body,
-                {
-                    coerce: false,
-                    sanitize: false,
-                    object: true,
-                    trim: false
-                }
-            );
+            var result = parser.parse(body);
 
             if(!result['soap:Envelope']){
                 callback({
