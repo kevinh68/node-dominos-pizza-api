@@ -8,6 +8,7 @@ var Menu=require('./Menu.js');
 
 var Store = function(parameters) {
     this.ID = parameters.ID;
+    this.Address = '';
 };
 
 Store.prototype.getInfo = function(callback) {
@@ -21,9 +22,22 @@ Store.prototype.getInfo = function(callback) {
             );
         return;
     }
-
-    httpJson.get(urls.store.info.replace('${storeID}', this.ID), callback);
+    
+    httpJson.get(urls.store.info.replace('${storeID}', this.ID), this.mergeResponse.bind(this,callback));
 };
+
+Store.prototype.mergeResponse = function(callback,response){
+    for(var key in response.result){
+        if(util.isArray(response.result[key])&&!response.result[key].length){
+            continue;
+        }
+        this[key]=response.result[key];
+    }
+    //console.log(util.inspect(this.Products, { showHidden: true, depth: 5 }));
+    if(callback){
+        callback(response);
+    }
+}
 
 Store.prototype.getMenu = function(callback, lang, noCache) {
     if (this.cachedMenu && !noCache) {
