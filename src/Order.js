@@ -164,7 +164,7 @@ Order.prototype.place = function(callback) {
     'Order' : this
   });
 
-  httpJson.post(urls.order.place, stringified, callback);
+  httpJson.post(urls.order.place, stringified, this.mergeResponse.bind(this,callback));
 };
 
 Order.prototype.mergeResponse = function(callback,response){
